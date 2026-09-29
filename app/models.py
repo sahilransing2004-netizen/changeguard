@@ -21,3 +21,4 @@ class Verdict(BaseModel):
     level: RiskLevel
     reasons: list[str]
     summary: ChangeSummary
+    source: str = "heuristic"

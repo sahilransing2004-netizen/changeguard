@@ -1,0 +1,31 @@
+name: ChangeGuard
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Run tests
+        run: pytest -q
+      - name: Analyze PR diff
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: git diff origin/${{ github.base_ref }}...HEAD | python scripts/ci_check.py
+      - name: Comment on PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh pr comment ${{ github.event.pull_request.number }} --body-file comment.md --edit-last --create-if-none
+      - name: Fail on high risk
+        run: test "$(jq -r .level verdict.json)" != "high"

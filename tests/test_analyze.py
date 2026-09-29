@@ -43,3 +43,17 @@ def test_llm_cannot_score_below_heuristic(monkeypatch):
     monkeypatch.setattr("app.llm.ask_llm", lambda t, d, c: {"risk_score": 0, "reasons": ["looks fine"]})
     body = client.post("/analyze", json={"diff": TF_DIFF}).json()
     assert body["risk_score"] >= 30
+
+
+SQL_DROP = """diff --git a/migrations/002.sql b/migrations/002.sql
+--- a/migrations/002.sql
++++ b/migrations/002.sql
+@@ -1,1 +1,1 @@
++ALTER TABLE users DROP COLUMN email;
+"""
+
+
+def test_destructive_sql_is_high_risk():
+    body = client.post("/analyze", json={"diff": SQL_DROP}).json()
+    assert body["risk_score"] >= 70
+    assert body["level"] == "high"

@@ -28,13 +28,18 @@ def llm_enabled() -> bool:
     return os.getenv("CHANGEGUARD_USE_LLM", "0") == "1"
 
 
-def ask_llm(title: str, diff: str, categories: list[str]) -> dict | None:
+def ask_llm(title: str, diff: str, categories: list[str],
+            context: list[dict] | None = None) -> dict | None:
     """Return {"risk_score": int, "reasons": [str]} or None on any failure."""
     user = (
         f"Title: {title or '(none)'}\n"
         f"Detected categories: {', '.join(categories)}\n"
         f"Diff:\n{diff[:6000]}"
     )
+    if context:
+        notes = "\n".join(f"[{d['id']}] {d['title']}: {d['text']}" for d in context)
+        user += ("\n\nRelevant past incidents and runbooks (use only if truly relevant, "
+                 "and cite the id in a reason):\n" + notes)
     try:
         r = httpx.post(
             f"{OLLAMA_URL}/api/chat",

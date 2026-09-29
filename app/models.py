@@ -22,3 +22,4 @@ class Verdict(BaseModel):
     reasons: list[str]
     summary: ChangeSummary
     source: str = "heuristic"
+    related_incidents: list[str] = []

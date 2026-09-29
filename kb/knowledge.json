@@ -1,0 +1,20 @@
+[
+  {"id": "INC-101", "type": "incident", "title": "Kafka broker limit raised without consumer change",
+   "text": "Raised message.max.bytes on the Kafka brokers but not fetch.max.bytes on consumers. Consumers stalled on large messages and lag grew to 2 hours. Broker and consumer size limits must be changed together."},
+  {"id": "INC-102", "type": "incident", "title": "Terraform instance resize caused downtime",
+   "text": "Changing instance_type in Terraform forced instance replacement. The service was down for 12 minutes and the elastic IP was not reattached. Terraform plan showed 'forces replacement' but nobody read it."},
+  {"id": "INC-103", "type": "incident", "title": "Dropped database column broke old app version",
+   "text": "A migration dropped a column that the previous app version still read during the rolling deploy. Old pods returned HTTP 500 until the rollout finished. Column removal shipped in the same release as the code change."},
+  {"id": "INC-104", "type": "incident", "title": "Kubernetes memory limit lowered, pods OOMKilled",
+   "text": "Lowered the memory limit in deployment.yaml to 256Mi. Pods hit the limit under load, were OOMKilled and entered CrashLoopBackOff, causing a partial outage."},
+  {"id": "INC-105", "type": "incident", "title": "CI workflow trigger change deployed every branch to production",
+   "text": "Edited the GitHub Actions workflow trigger from main-only to all branches. A feature branch push triggered a production deploy. Pipeline trigger and environment changes need a second reviewer."},
+  {"id": "INC-106", "type": "incident", "title": "ConfigMap change not picked up by running pods",
+   "text": "Updated a Kubernetes ConfigMap but did not restart the pods. Services kept the old configuration for two days, then behaved inconsistently after a node reschedule."},
+  {"id": "INC-107", "type": "incident", "title": "NetworkPolicy change blocked cross-namespace traffic",
+   "text": "A new Kubernetes NetworkPolicy defaulted to deny and blocked traffic between the payments and orders namespaces. Requests timed out until the policy was rolled back."},
+  {"id": "RB-201", "type": "runbook", "title": "Safe column removal (expand and contract)",
+   "text": "Never drop a column in the same release as the code change. First deploy code that no longer reads the column, wait for the rollout to finish, then drop the column in a later release. Take a backup before any DROP."},
+  {"id": "RB-202", "type": "runbook", "title": "Terraform change checklist",
+   "text": "Always run terraform plan and read every line marked 'forces replacement' or 'destroy'. Schedule replacements in a maintenance window, confirm elastic IPs and volumes are preserved, and have a rollback plan."}
+]

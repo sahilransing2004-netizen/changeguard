@@ -1,0 +1,80 @@
+[
+  {
+    "name": "encryption removed",
+    "title": "Remove bucket encryption",
+    "expected": "high",
+    "diff": "diff --git a/infra/s3.tf b/infra/s3.tf\n--- a/infra/s3.tf\n+++ b/infra/s3.tf\n@@ -1 +1 @@\n-      sse_algorithm = \"aws:kms\"\n"
+  },
+  {
+    "name": "tls enforcement off",
+    "title": "Turn off TLS enforcement",
+    "expected": "high",
+    "diff": "diff --git a/infra/db.tf b/infra/db.tf\n--- a/infra/db.tf\n+++ b/infra/db.tf\n@@ -1 +1 @@\n-  ssl_enforcement_enabled = true\n+  ssl_enforcement_enabled = false\n"
+  },
+  {
+    "name": "db url password",
+    "title": "Point app at prod DB",
+    "expected": "high",
+    "diff": "diff --git a/app/settings.py b/app/settings.py\n--- a/app/settings.py\n+++ b/app/settings.py\n@@ -1 +1 @@\n+DATABASE_URL = \"postgres://admin:S3cretPass99@db.prod.internal:5432/app\"\n"
+  },
+  {
+    "name": "wipe data dir",
+    "title": "Reset db host in deploy",
+    "expected": "high",
+    "diff": "diff --git a/scripts/deploy.sh b/scripts/deploy.sh\n--- a/scripts/deploy.sh\n+++ b/scripts/deploy.sh\n@@ -1 +1 @@\n+rm -rf /var/lib/postgresql/data/*\n"
+  },
+  {
+    "name": "auth disabled",
+    "title": "Disable API auth",
+    "expected": "high",
+    "diff": "diff --git a/config/app.yaml b/config/app.yaml\n--- a/config/app.yaml\n+++ b/config/app.yaml\n@@ -1 +1 @@\n-  authentication_enabled: true\n+  authentication_enabled: false\n"
+  },
+  {
+    "name": "instance upsize",
+    "title": "Upsize app server",
+    "expected": "medium",
+    "diff": "diff --git a/infra/app.tf b/infra/app.tf\n--- a/infra/app.tf\n+++ b/infra/app.tf\n@@ -1 +1 @@\n-  instance_type = \"t3.medium\"\n+  instance_type = \"m5.2xlarge\"\n"
+  },
+  {
+    "name": "memory limit cut",
+    "title": "Lower memory limit",
+    "expected": "medium",
+    "diff": "diff --git a/k8s/api.yaml b/k8s/api.yaml\n--- a/k8s/api.yaml\n+++ b/k8s/api.yaml\n@@ -1 +1 @@\n-            memory: 512Mi\n+            memory: 256Mi\n"
+  },
+  {
+    "name": "base image bump",
+    "title": "Upgrade python image",
+    "expected": "medium",
+    "diff": "diff --git a/Dockerfile b/Dockerfile\n--- a/Dockerfile\n+++ b/Dockerfile\n@@ -1 +1 @@\n-FROM python:3.11-slim\n+FROM python:3.12-slim\n"
+  },
+  {
+    "name": "proxy timeout",
+    "title": "Shorten proxy timeout",
+    "expected": "medium",
+    "diff": "diff --git a/config/nginx.conf b/config/nginx.conf\n--- a/config/nginx.conf\n+++ b/config/nginx.conf\n@@ -1 +1 @@\n-  proxy_read_timeout 60s;\n+  proxy_read_timeout 5s;\n"
+  },
+  {
+    "name": "rename test",
+    "title": "Rename test",
+    "expected": "low",
+    "diff": "diff --git a/tests/test_api.py b/tests/test_api.py\n--- a/tests/test_api.py\n+++ b/tests/test_api.py\n@@ -1 +1 @@\n-def test_get():\n+def test_get_returns_200():\n"
+  },
+  {
+    "name": "error message typo",
+    "title": "Fix typo in error",
+    "expected": "low",
+    "diff": "diff --git a/app/errors.py b/app/errors.py\n--- a/app/errors.py\n+++ b/app/errors.py\n@@ -1 +1 @@\n-    raise ValueError(\"Invlaid input\")\n+    raise ValueError(\"Invalid input\")\n"
+  },
+  {
+    "name": "gitignore",
+    "title": "Ignore venv",
+    "expected": "low",
+    "diff": "diff --git a/.gitignore b/.gitignore\n--- a/.gitignore\n+++ b/.gitignore\n@@ -1 +1 @@\n+.venv/\n+__pycache__/\n"
+  },
+  {
+    "name": "type hints",
+    "title": "Add type hints",
+    "expected": "low",
+    "diff": "diff --git a/app/utils.py b/app/utils.py\n--- a/app/utils.py\n+++ b/app/utils.py\n@@ -1 +1 @@\n-def parse(s):\n+def parse(s: str) -> list[str]:\n"
+  }
+]

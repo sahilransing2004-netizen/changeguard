@@ -4,7 +4,8 @@ import httpx
 
 URL = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:8080/analyze"
 
-cases = json.load(open("eval/cases.json"))
+CASES = sys.argv[2] if len(sys.argv) > 2 else "eval/cases.json"
+cases = json.load(open(CASES))
 correct = 0
 print(f"{'case':<20} {'expected':<9} {'got':<9} {'score':<6} {'source':<10} result")
 for c in cases:

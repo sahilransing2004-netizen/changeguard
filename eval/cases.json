@@ -1,18 +1,110 @@
 [
-  {"name": "readme typo", "title": "Fix README typo", "expected": "low",
-   "diff": "diff --git a/README.md b/README.md\n--- a/README.md\n+++ b/README.md\n@@ -1 +1 @@\n-Instal guide\n+Install guide\n"},
-  {"name": "add unit test", "title": "Add test for parser", "expected": "low",
-   "diff": "diff --git a/tests/test_parser.py b/tests/test_parser.py\n--- a/tests/test_parser.py\n+++ b/tests/test_parser.py\n@@ -1 +1,3 @@\n+def test_empty():\n+    assert parse('') == []\n"},
-  {"name": "ci lint step", "title": "Add lint step to CI", "expected": "low",
-   "diff": "diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml\n--- a/.github/workflows/ci.yml\n+++ b/.github/workflows/ci.yml\n@@ -10 +10,2 @@\n+      - run: ruff check .\n"},
-  {"name": "terraform resize", "title": "Bump instance size", "expected": "medium",
-   "diff": "diff --git a/infra/main.tf b/infra/main.tf\n--- a/infra/main.tf\n+++ b/infra/main.tf\n@@ -1,2 +1,2 @@\n-instance_type = \"t3.micro\"\n+instance_type = \"t3.large\"\n"},
-  {"name": "reduce replicas", "title": "Scale api down to one replica", "expected": "medium",
-   "diff": "diff --git a/k8s/deployment.yaml b/k8s/deployment.yaml\n--- a/k8s/deployment.yaml\n+++ b/k8s/deployment.yaml\n@@ -6 +6 @@\n-  replicas: 3\n+  replicas: 1\n"},
-  {"name": "kafka retention", "title": "Shorten Kafka retention", "expected": "medium",
-   "diff": "diff --git a/config/kafka.properties b/config/kafka.properties\n--- a/config/kafka.properties\n+++ b/config/kafka.properties\n@@ -3 +3 @@\n-log.retention.hours=168\n+log.retention.hours=1\n"},
-  {"name": "drop column", "title": "Drop email column", "expected": "high",
-   "diff": "diff --git a/migrations/002.sql b/migrations/002.sql\n--- a/migrations/002.sql\n+++ b/migrations/002.sql\n@@ -1 +1 @@\n+ALTER TABLE users DROP COLUMN email;\n"},
-  {"name": "destroy database", "title": "Remove production database", "expected": "high",
-   "diff": "diff --git a/infra/db.tf b/infra/db.tf\n--- a/infra/db.tf\n+++ b/infra/db.tf\n@@ -1,4 +0,0 @@\n-resource \"aws_db_instance\" \"prod\" {\n-  identifier = \"prod-db\"\n-  engine     = \"postgres\"\n-}\n"}
+ {
+  "name": "readme typo",
+  "title": "Fix README typo",
+  "expected": "low",
+  "diff": "diff --git a/README.md b/README.md\n--- a/README.md\n+++ b/README.md\n@@ -1 +1 @@\n-Instal guide\n+Install guide\n"
+ },
+ {
+  "name": "add unit test",
+  "title": "Add test for parser",
+  "expected": "low",
+  "diff": "diff --git a/tests/test_parser.py b/tests/test_parser.py\n--- a/tests/test_parser.py\n+++ b/tests/test_parser.py\n@@ -1 +1,3 @@\n+def test_empty():\n+    assert parse('') == []\n"
+ },
+ {
+  "name": "ci lint step",
+  "title": "Add lint step to CI",
+  "expected": "low",
+  "diff": "diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml\n--- a/.github/workflows/ci.yml\n+++ b/.github/workflows/ci.yml\n@@ -10 +10,2 @@\n+      - run: ruff check .\n"
+ },
+ {
+  "name": "terraform resize",
+  "title": "Bump instance size",
+  "expected": "medium",
+  "diff": "diff --git a/infra/main.tf b/infra/main.tf\n--- a/infra/main.tf\n+++ b/infra/main.tf\n@@ -1,2 +1,2 @@\n-instance_type = \"t3.micro\"\n+instance_type = \"t3.large\"\n"
+ },
+ {
+  "name": "reduce replicas",
+  "title": "Scale api down to one replica",
+  "expected": "medium",
+  "diff": "diff --git a/k8s/deployment.yaml b/k8s/deployment.yaml\n--- a/k8s/deployment.yaml\n+++ b/k8s/deployment.yaml\n@@ -6 +6 @@\n-  replicas: 3\n+  replicas: 1\n"
+ },
+ {
+  "name": "kafka retention",
+  "title": "Shorten Kafka retention",
+  "expected": "medium",
+  "diff": "diff --git a/config/kafka.properties b/config/kafka.properties\n--- a/config/kafka.properties\n+++ b/config/kafka.properties\n@@ -3 +3 @@\n-log.retention.hours=168\n+log.retention.hours=1\n"
+ },
+ {
+  "name": "drop column",
+  "title": "Drop email column",
+  "expected": "high",
+  "diff": "diff --git a/migrations/002.sql b/migrations/002.sql\n--- a/migrations/002.sql\n+++ b/migrations/002.sql\n@@ -1 +1 @@\n+ALTER TABLE users DROP COLUMN email;\n"
+ },
+ {
+  "name": "destroy database",
+  "title": "Remove production database",
+  "expected": "high",
+  "diff": "diff --git a/infra/db.tf b/infra/db.tf\n--- a/infra/db.tf\n+++ b/infra/db.tf\n@@ -1,4 +0,0 @@\n-resource \"aws_db_instance\" \"prod\" {\n-  identifier = \"prod-db\"\n-  engine     = \"postgres\"\n-}\n"
+ },
+ {
+  "name": "remove dead flag",
+  "title": "Remove unused feature flag",
+  "expected": "low",
+  "diff": "diff --git a/config/legacy.yaml b/config/legacy.yaml\n--- a/config/legacy.yaml\n+++ b/config/legacy.yaml\n@@ -1 +1 @@\n-enable_old_banner: false\n"
+ },
+ {
+  "name": "rename variable",
+  "title": "Rename helper variable",
+  "expected": "low",
+  "diff": "diff --git a/app/utils.py b/app/utils.py\n--- a/app/utils.py\n+++ b/app/utils.py\n@@ -1 +1 @@\n-tmp = clean(x)\n+cleaned = clean(x)\n"
+ },
+ {
+  "name": "patch dep bump",
+  "title": "Bump fastapi patch version",
+  "expected": "low",
+  "diff": "diff --git a/requirements.txt b/requirements.txt\n--- a/requirements.txt\n+++ b/requirements.txt\n@@ -1 +1 @@\n-fastapi==0.110.0\n+fastapi==0.110.1\n"
+ },
+ {
+  "name": "nullable column",
+  "title": "Add nullable notes column",
+  "expected": "low",
+  "diff": "diff --git a/migrations/003.sql b/migrations/003.sql\n--- a/migrations/003.sql\n+++ b/migrations/003.sql\n@@ -1 +1 @@\n+ALTER TABLE users ADD COLUMN notes TEXT NULL;\n"
+ },
+ {
+  "name": "image latest",
+  "title": "Use latest image tag",
+  "expected": "medium",
+  "diff": "diff --git a/k8s/deployment.yaml b/k8s/deployment.yaml\n--- a/k8s/deployment.yaml\n+++ b/k8s/deployment.yaml\n@@ -1 +1 @@\n-        image: api:1.4.2\n+        image: api:latest\n"
+ },
+ {
+  "name": "create index",
+  "title": "Add index on orders",
+  "expected": "medium",
+  "diff": "diff --git a/migrations/004.sql b/migrations/004.sql\n--- a/migrations/004.sql\n+++ b/migrations/004.sql\n@@ -1 +1 @@\n+CREATE INDEX idx_orders_user ON orders(user_id);\n"
+ },
+ {
+  "name": "iam wildcard",
+  "title": "Widen S3 policy",
+  "expected": "high",
+  "diff": "diff --git a/infra/iam.tf b/infra/iam.tf\n--- a/infra/iam.tf\n+++ b/infra/iam.tf\n@@ -1 +1 @@\n-    actions = [\"s3:GetObject\"]\n+    actions = [\"s3:*\"]\n"
+ },
+ {
+  "name": "replicas zero",
+  "title": "Scale api to zero",
+  "expected": "high",
+  "diff": "diff --git a/k8s/deployment.yaml b/k8s/deployment.yaml\n--- a/k8s/deployment.yaml\n+++ b/k8s/deployment.yaml\n@@ -1 +1 @@\n-  replicas: 3\n+  replicas: 0\n"
+ },
+ {
+  "name": "open ssh",
+  "title": "Allow SSH from anywhere",
+  "expected": "high",
+  "diff": "diff --git a/infra/sg.tf b/infra/sg.tf\n--- a/infra/sg.tf\n+++ b/infra/sg.tf\n@@ -1 +1 @@\n-  cidr_blocks = [\"10.0.0.0/16\"]\n+  cidr_blocks = [\"0.0.0.0/0\"]\n"
+ },
+ {
+  "name": "delete kafka topic",
+  "title": "Remove orders topic",
+  "expected": "high",
+  "diff": "diff --git a/config/topics.yaml b/config/topics.yaml\n--- a/config/topics.yaml\n+++ b/config/topics.yaml\n@@ -1 +1 @@\n-  - name: orders-events\n"
+ }
 ]

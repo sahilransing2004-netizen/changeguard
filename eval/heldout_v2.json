@@ -1,0 +1,62 @@
+[
+  {
+    "name": "block public off",
+    "title": "Allow public bucket policy",
+    "expected": "high",
+    "diff": "diff --git a/infra/s3.tf b/infra/s3.tf\n--- a/infra/s3.tf\n+++ b/infra/s3.tf\n@@ -1 +1 @@\n-  block_public_policy = true\n+  block_public_policy = false\n"
+  },
+  {
+    "name": "priv escalation",
+    "title": "Allow privilege escalation",
+    "expected": "high",
+    "diff": "diff --git a/k8s/api.yaml b/k8s/api.yaml\n--- a/k8s/api.yaml\n+++ b/k8s/api.yaml\n@@ -1 +1 @@\n+          allowPrivilegeEscalation: true\n"
+  },
+  {
+    "name": "env password",
+    "title": "Add DB password to env file",
+    "expected": "high",
+    "diff": "diff --git a/deploy/prod.env b/deploy/prod.env\n--- a/deploy/prod.env\n+++ b/deploy/prod.env\n@@ -1 +1 @@\n+DB_PASSWORD=Pr0d-Passw0rd-2024!\n"
+  },
+  {
+    "name": "rds public",
+    "title": "Make DB reachable",
+    "expected": "high",
+    "diff": "diff --git a/infra/db.tf b/infra/db.tf\n--- a/infra/db.tf\n+++ b/infra/db.tf\n@@ -1 +1 @@\n-  publicly_accessible = false\n+  publicly_accessible = true\n"
+  },
+  {
+    "name": "deletion protection",
+    "title": "Disable deletion protection",
+    "expected": "medium",
+    "diff": "diff --git a/infra/db.tf b/infra/db.tf\n--- a/infra/db.tf\n+++ b/infra/db.tf\n@@ -1 +1 @@\n-  deletion_protection = true\n+  deletion_protection = false\n"
+  },
+  {
+    "name": "remove ci tests",
+    "title": "Drop test step",
+    "expected": "medium",
+    "diff": "diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml\n--- a/.github/workflows/ci.yml\n+++ b/.github/workflows/ci.yml\n@@ -1 +1 @@\n-      - run: pytest\n"
+  },
+  {
+    "name": "tf comment",
+    "title": "Fix comment typo",
+    "expected": "low",
+    "diff": "diff --git a/infra/vpc.tf b/infra/vpc.tf\n--- a/infra/vpc.tf\n+++ b/infra/vpc.tf\n@@ -1 +1 @@\n-# creat the vpc\n+# create the vpc\n"
+  },
+  {
+    "name": "readme section",
+    "title": "Add usage section",
+    "expected": "low",
+    "diff": "diff --git a/README.md b/README.md\n--- a/README.md\n+++ b/README.md\n@@ -1 +1 @@\n+## Usage\n+Run `make dev`.\n"
+  },
+  {
+    "name": "ci cache key",
+    "title": "Update cache key",
+    "expected": "low",
+    "diff": "diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml\n--- a/.github/workflows/ci.yml\n+++ b/.github/workflows/ci.yml\n@@ -1 +1 @@\n-          key: deps-v1\n+          key: deps-v2\n"
+  },
+  {
+    "name": "version bump",
+    "title": "Bump package version",
+    "expected": "low",
+    "diff": "diff --git a/package.json b/package.json\n--- a/package.json\n+++ b/package.json\n@@ -1 +1 @@\n-  \"version\": \"1.2.3\",\n+  \"version\": \"1.2.4\",\n"
+  }
+]

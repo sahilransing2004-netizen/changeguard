@@ -1,0 +1,50 @@
+[
+  {
+    "name": "public s3 bucket",
+    "title": "Make assets bucket public",
+    "expected": "high",
+    "diff": "diff --git a/infra/s3.tf b/infra/s3.tf\n--- a/infra/s3.tf\n+++ b/infra/s3.tf\n@@ -1 +1 @@\n-  acl = \"private\"\n+  acl = \"public-read\"\n"
+  },
+  {
+    "name": "privileged container",
+    "title": "Run agent privileged",
+    "expected": "high",
+    "diff": "diff --git a/k8s/agent.yaml b/k8s/agent.yaml\n--- a/k8s/agent.yaml\n+++ b/k8s/agent.yaml\n@@ -1 +1 @@\n+        securityContext:\n+          privileged: true\n"
+  },
+  {
+    "name": "disable db backups",
+    "title": "Turn off RDS backups",
+    "expected": "high",
+    "diff": "diff --git a/infra/db.tf b/infra/db.tf\n--- a/infra/db.tf\n+++ b/infra/db.tf\n@@ -1 +1 @@\n-  backup_retention_period = 7\n+  backup_retention_period = 0\n"
+  },
+  {
+    "name": "skip final snapshot",
+    "title": "Skip snapshot on delete",
+    "expected": "medium",
+    "diff": "diff --git a/infra/db.tf b/infra/db.tf\n--- a/infra/db.tf\n+++ b/infra/db.tf\n@@ -1 +1 @@\n+  skip_final_snapshot = true\n"
+  },
+  {
+    "name": "hardcoded secret",
+    "title": "Add API key to config",
+    "expected": "high",
+    "diff": "diff --git a/config/app.yaml b/config/app.yaml\n--- a/config/app.yaml\n+++ b/config/app.yaml\n@@ -1 +1 @@\n+  api_key: \"sk_live_51H8xExampleKeyDoNotUse\"\n"
+  },
+  {
+    "name": "log message tweak",
+    "title": "Improve log wording",
+    "expected": "low",
+    "diff": "diff --git a/app/service.py b/app/service.py\n--- a/app/service.py\n+++ b/app/service.py\n@@ -1 +1 @@\n-    log.info(\"done\")\n+    log.info(\"request completed\")\n"
+  },
+  {
+    "name": "test timeout bump",
+    "title": "Raise test timeout",
+    "expected": "low",
+    "diff": "diff --git a/tests/conftest.py b/tests/conftest.py\n--- a/tests/conftest.py\n+++ b/tests/conftest.py\n@@ -1 +1 @@\n-TIMEOUT = 5\n+TIMEOUT = 10\n"
+  },
+  {
+    "name": "docstring update",
+    "title": "Update docstring",
+    "expected": "low",
+    "diff": "diff --git a/app/utils.py b/app/utils.py\n--- a/app/utils.py\n+++ b/app/utils.py\n@@ -1 +1 @@\n-    \"\"\"Parse.\"\"\"\n+    \"\"\"Parse the input string into tokens.\"\"\"\n"
+  }
+]

@@ -7,25 +7,46 @@ permissions:
   pull-requests: write
 
 jobs:
-  review:
-    runs-on: ubuntu-latest
+  analyze:
+    # Same-repo PRs only: a self-hosted runner must never execute code from forks.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: self-hosted
+    env:
+      CHANGEGUARD_URL: http://localhost:8000/analyze
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - run: pip install -r requirements.txt
-      - name: Run tests
-        run: pytest -q
-      - name: Analyze PR diff
-        env:
-          PR_TITLE: ${{ github.event.pull_request.title }}
-        run: git diff origin/${{ github.base_ref }}...HEAD | python scripts/ci_check.py
+
+      - name: Build diff
+        run: git diff "origin/${{ github.base_ref }}...HEAD" > pr.diff
+
+      - name: Analyze
+        id: analyze
+        run: |
+          jq -n --arg title "${{ github.event.pull_request.title }}" --rawfile diff pr.diff \
+            '{title:$title, diff:$diff}' > req.json
+          curl -sf --max-time 300 -H 'content-type: application/json' \
+            -d @req.json "$CHANGEGUARD_URL" > verdict.json
+          echo "level=$(jq -r .level verdict.json)" >> "$GITHUB_OUTPUT"
+          echo "score=$(jq -r .risk_score verdict.json)" >> "$GITHUB_OUTPUT"
+          echo "source=$(jq -r .source verdict.json)" >> "$GITHUB_OUTPUT"
+
       - name: Comment on PR
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh pr comment ${{ github.event.pull_request.number }} --body-file comment.md --edit-last --create-if-none
-      - name: Fail on high risk
-        run: test "$(jq -r .level verdict.json)" != "high"
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const v = require('./verdict.json');
+            const icon = {low: '🟢', medium: '🟡', high: '🔴'}[v.level];
+            const reasons = v.reasons.map(r => `- ${r}`).join('\n');
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: context.issue.number,
+              body: `### ${icon} ChangeGuard: **${v.level}** (score ${v.risk_score}, ${v.source})\n\n${reasons}`
+            });
+
+      - name: Gate
+        if: steps.analyze.outputs.level == 'high'
+        run: |
+          echo "ChangeGuard rated this change high risk."
+          exit 1

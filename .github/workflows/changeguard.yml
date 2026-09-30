@@ -23,8 +23,10 @@ jobs:
 
       - name: Analyze
         id: analyze
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
-          jq -n --arg title "${{ github.event.pull_request.title }}" --rawfile diff pr.diff \
+          jq -n --arg title "$PR_TITLE" --rawfile diff pr.diff \
             '{title:$title, diff:$diff}' > req.json
           curl -sf --max-time 300 -H 'content-type: application/json' \
             -d @req.json "$CHANGEGUARD_URL" > verdict.json

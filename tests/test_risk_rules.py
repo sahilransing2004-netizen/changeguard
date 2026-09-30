@@ -102,3 +102,27 @@ def test_secret_from_variable_not_flagged():
 
 def test_secret_in_tests_not_flagged():
     assert names(d("tests/conftest.py", '+PASSWORD = "hunter2hunter2hunter2"')) == []
+
+
+from app.analyzer import is_comment_only, is_trivial
+
+
+def test_comment_only_is_trivial():
+    assert is_trivial(d("infra/vpc.tf", "-# creat the vpc", "+# create the vpc"))
+
+
+def test_comment_plus_code_not_trivial():
+    assert not is_comment_only(d("infra/vpc.tf", "+# note", '+  cidr_block = "10.0.0.0/16"'))
+
+
+def test_empty_diff_not_trivial():
+    assert not is_trivial("")
+
+
+def test_secret_in_comment_not_trivial():
+    assert not is_trivial(d("config/app.yaml", '+# api_key: "sk_live_51H8xExampleKeyDoNotUse"'))
+
+
+def test_comment_only_tf_is_low():
+    diff = d("infra/vpc.tf", "-# creat the vpc", "+# create the vpc")
+    assert heuristic_verdict(parse_diff(diff), diff).level.value == "low"

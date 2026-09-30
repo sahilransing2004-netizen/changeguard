@@ -73,7 +73,33 @@ def find_risky(diff: str) -> list[tuple[str, int]]:
     return list(hits.items())
 
 
+COMMENT_PREFIXES = ("#", "//", "--", "/*", "*", "<!--")
+
+
+def is_comment_only(diff: str) -> bool:
+    """True if the diff changes at least one line and every changed line is blank or a comment."""
+    seen = False
+    for _, _, text in iter_changed_lines(diff):
+        t = text.strip()
+        if not t:
+            continue
+        seen = True
+        if not t.startswith(COMMENT_PREFIXES):
+            return False
+    return seen
+
+
+def is_trivial(diff: str) -> bool:
+    """Comment/whitespace-only change with no risky pattern (a secret in a comment still counts)."""
+    return bool(diff) and is_comment_only(diff) and not find_risky(diff)
+
+
 def heuristic_verdict(summary: ChangeSummary, diff: str = "") -> Verdict:
+    if is_trivial(diff):
+        return Verdict(risk_score=5, level=RiskLevel.LOW,
+                       reasons=["Only comments or whitespace changed",
+                                f"{summary.added} lines added, {summary.removed} removed"],
+                       summary=summary)
     score = sum(BASE_WEIGHTS.get(c, 5) for c in summary.categories)
     score += min((summary.added + summary.removed) // 20, 20)
     destructive = find_destructive(diff)
@@ -97,7 +123,7 @@ def analyze(diff: str, title: str, summary: ChangeSummary) -> Verdict:
     from .llm import ask_llm, llm_enabled
 
     baseline = heuristic_verdict(summary, diff)
-    if not llm_enabled():
+    if not llm_enabled() or is_trivial(diff):
         return baseline
     related = []
     if rag.rag_enabled() and baseline.risk_score >= 30:

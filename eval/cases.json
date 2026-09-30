@@ -1,0 +1,18 @@
+[
+  {"name": "readme typo", "title": "Fix README typo", "expected": "low",
+   "diff": "diff --git a/README.md b/README.md\n--- a/README.md\n+++ b/README.md\n@@ -1 +1 @@\n-Instal guide\n+Install guide\n"},
+  {"name": "add unit test", "title": "Add test for parser", "expected": "low",
+   "diff": "diff --git a/tests/test_parser.py b/tests/test_parser.py\n--- a/tests/test_parser.py\n+++ b/tests/test_parser.py\n@@ -1 +1,3 @@\n+def test_empty():\n+    assert parse('') == []\n"},
+  {"name": "ci lint step", "title": "Add lint step to CI", "expected": "low",
+   "diff": "diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml\n--- a/.github/workflows/ci.yml\n+++ b/.github/workflows/ci.yml\n@@ -10 +10,2 @@\n+      - run: ruff check .\n"},
+  {"name": "terraform resize", "title": "Bump instance size", "expected": "medium",
+   "diff": "diff --git a/infra/main.tf b/infra/main.tf\n--- a/infra/main.tf\n+++ b/infra/main.tf\n@@ -1,2 +1,2 @@\n-instance_type = \"t3.micro\"\n+instance_type = \"t3.large\"\n"},
+  {"name": "reduce replicas", "title": "Scale api down to one replica", "expected": "medium",
+   "diff": "diff --git a/k8s/deployment.yaml b/k8s/deployment.yaml\n--- a/k8s/deployment.yaml\n+++ b/k8s/deployment.yaml\n@@ -6 +6 @@\n-  replicas: 3\n+  replicas: 1\n"},
+  {"name": "kafka retention", "title": "Shorten Kafka retention", "expected": "medium",
+   "diff": "diff --git a/config/kafka.properties b/config/kafka.properties\n--- a/config/kafka.properties\n+++ b/config/kafka.properties\n@@ -3 +3 @@\n-log.retention.hours=168\n+log.retention.hours=1\n"},
+  {"name": "drop column", "title": "Drop email column", "expected": "high",
+   "diff": "diff --git a/migrations/002.sql b/migrations/002.sql\n--- a/migrations/002.sql\n+++ b/migrations/002.sql\n@@ -1 +1 @@\n+ALTER TABLE users DROP COLUMN email;\n"},
+  {"name": "destroy database", "title": "Remove production database", "expected": "high",
+   "diff": "diff --git a/infra/db.tf b/infra/db.tf\n--- a/infra/db.tf\n+++ b/infra/db.tf\n@@ -1,4 +0,0 @@\n-resource \"aws_db_instance\" \"prod\" {\n-  identifier = \"prod-db\"\n-  engine     = \"postgres\"\n-}\n"}
+]

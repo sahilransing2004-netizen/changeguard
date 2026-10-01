@@ -1,3 +1,4 @@
+import os
 import time
 from fastapi import FastAPI, Response
 from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
@@ -10,6 +11,7 @@ app = FastAPI(title="ChangeGuard", version="0.3.0")
 VERDICTS = Counter("changeguard_verdicts_total", "Verdicts issued", ["level", "source"])
 RISK = Histogram("changeguard_risk_score", "Risk score of analyzed changes",
                  buckets=[10, 20, 30, 40, 50, 60, 70, 80, 90, 100])
+FALLBACKS = Counter("changeguard_llm_fallbacks_total", "LLM enabled but heuristic verdict returned")
 LATENCY = Histogram("changeguard_analyze_seconds", "Analysis latency in seconds",
                     buckets=[0.05, 0.1, 0.5, 1, 2, 5, 10, 30, 60])
 
@@ -37,4 +39,6 @@ def analyze(req: AnalyzeRequest):
     LATENCY.observe(time.perf_counter() - start)
     RISK.observe(v.risk_score)
     VERDICTS.labels(level=getattr(v.level, "value", str(v.level)), source=str(v.source)).inc()
+    if os.getenv("CHANGEGUARD_USE_LLM", "0") == "1" and str(v.source) == "heuristic" and v.risk_score > 5:
+        FALLBACKS.inc()
     return v

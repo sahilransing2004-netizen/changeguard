@@ -55,7 +55,7 @@ def ask_llm(title: str, diff: str, categories: list[str],
                 ],
                 "stream": False,
                 "format": "json",
-                "options": {"temperature": 0},
+                "options": {"temperature": 0, "seed": 42},
             },
             timeout=120,
         )

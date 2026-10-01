@@ -1,0 +1,62 @@
+[
+  {
+    "name": "rds deletion protection",
+    "title": "Turn off deletion protection",
+    "expected": "high",
+    "diff": "diff --git a/infra/db.tf b/infra/db.tf\n--- a/infra/db.tf\n+++ b/infra/db.tf\n@@ -1 +1 @@\n-  deletion_protection = true\n+  deletion_protection = false\n"
+  },
+  {
+    "name": "run as root",
+    "title": "Run container as root",
+    "expected": "high",
+    "diff": "diff --git a/k8s/api.yaml b/k8s/api.yaml\n--- a/k8s/api.yaml\n+++ b/k8s/api.yaml\n@@ -1 +1 @@\n-        runAsUser: 1000\n+        runAsUser: 0\n"
+  },
+  {
+    "name": "host network",
+    "title": "Use host networking",
+    "expected": "high",
+    "diff": "diff --git a/k8s/api.yaml b/k8s/api.yaml\n--- a/k8s/api.yaml\n+++ b/k8s/api.yaml\n@@ -1 +1 @@\n+      hostNetwork: true\n"
+  },
+  {
+    "name": "memory limit cut",
+    "title": "Lower memory limit",
+    "expected": "medium",
+    "diff": "diff --git a/k8s/api.yaml b/k8s/api.yaml\n--- a/k8s/api.yaml\n+++ b/k8s/api.yaml\n@@ -1 +1 @@\n-            memory: 1Gi\n+            memory: 128Mi\n"
+  },
+  {
+    "name": "cron every minute",
+    "title": "Run cleanup more often",
+    "expected": "medium",
+    "diff": "diff --git a/k8s/cleanup.yaml b/k8s/cleanup.yaml\n--- a/k8s/cleanup.yaml\n+++ b/k8s/cleanup.yaml\n@@ -1 +1 @@\n-  schedule: \"0 * * * *\"\n+  schedule: \"* * * * *\"\n"
+  },
+  {
+    "name": "error message typo",
+    "title": "Fix typo in error",
+    "expected": "low",
+    "diff": "diff --git a/app/errors.py b/app/errors.py\n--- a/app/errors.py\n+++ b/app/errors.py\n@@ -1 +1 @@\n-    raise ValueError(\"invlid input\")\n+    raise ValueError(\"invalid input\")\n"
+  },
+  {
+    "name": "add type hints",
+    "title": "Add type hints",
+    "expected": "low",
+    "diff": "diff --git a/app/utils.py b/app/utils.py\n--- a/app/utils.py\n+++ b/app/utils.py\n@@ -1 +1 @@\n-def parse(s):\n+def parse(s: str) -> list[str]:\n"
+  },
+  {
+    "name": "changelog entry",
+    "title": "Update changelog",
+    "expected": "low",
+    "diff": "diff --git a/CHANGELOG.md b/CHANGELOG.md\n--- a/CHANGELOG.md\n+++ b/CHANGELOG.md\n@@ -1 +1 @@\n+- Added retry to the client\n"
+  },
+  {
+    "name": "yaml reindent",
+    "title": "Reformat yaml",
+    "expected": "low",
+    "diff": "diff --git a/k8s/cm.yaml b/k8s/cm.yaml\n--- a/k8s/cm.yaml\n+++ b/k8s/cm.yaml\n@@ -1 +1 @@\n-    key: value\n+  key: value\n"
+  },
+  {
+    "name": "debug log level",
+    "title": "Lower log level in tests",
+    "expected": "low",
+    "diff": "diff --git a/tests/conftest.py b/tests/conftest.py\n--- a/tests/conftest.py\n+++ b/tests/conftest.py\n@@ -1 +1 @@\n-LOG_LEVEL = \"INFO\"\n+LOG_LEVEL = \"DEBUG\"\n"
+  }
+]

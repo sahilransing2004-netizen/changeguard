@@ -1,3 +1,4 @@
+import os
 import re
 
 from .models import ChangeSummary, Verdict, RiskLevel
@@ -133,8 +134,9 @@ def analyze(diff: str, title: str, summary: ChangeSummary) -> Verdict:
     result = ask_llm(title, diff, summary.categories, related)
     if result is None:
         return baseline
-    score = max(result["risk_score"], baseline.risk_score)
-    reasons = result["reasons"] + [r for r in baseline.reasons if r not in result["reasons"]][:2]
+    raw = os.getenv("CHANGEGUARD_LLM_RAW") == "1"
+    score = result["risk_score"] if raw else max(result["risk_score"], baseline.risk_score)
+    reasons = result["reasons"] + ([] if raw else [r for r in baseline.reasons if r not in result["reasons"]][:2])
     level = RiskLevel.HIGH if score >= 60 else RiskLevel.MEDIUM if score >= 30 else RiskLevel.LOW
     return Verdict(risk_score=score, level=level, reasons=reasons[:6],
                    summary=summary, source="llm",

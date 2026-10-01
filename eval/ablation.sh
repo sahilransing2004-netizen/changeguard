@@ -9,7 +9,8 @@ run() {
   echo "=== $name ==="
   python eval/run_eval.py http://localhost:8000/analyze "$CASES"
 }
-run "heuristic" CHANGEGUARD_USE_LLM=0 CHANGEGUARD_USE_RAG=0
-run "llm only"  CHANGEGUARD_USE_LLM=1 CHANGEGUARD_USE_RAG=0
-run "llm + rag" CHANGEGUARD_USE_LLM=1 CHANGEGUARD_USE_RAG=1
+run "heuristic"       CHANGEGUARD_USE_LLM=0 CHANGEGUARD_USE_RAG=0
+run "llm + rules"     CHANGEGUARD_USE_LLM=1 CHANGEGUARD_USE_RAG=0
+run "llm raw"         CHANGEGUARD_USE_LLM=1 CHANGEGUARD_USE_RAG=0 CHANGEGUARD_LLM_RAW=1
+run "llm raw + rag"   CHANGEGUARD_USE_LLM=1 CHANGEGUARD_USE_RAG=1 CHANGEGUARD_LLM_RAW=1
 pkill -f "uvicorn app.main"

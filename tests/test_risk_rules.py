@@ -145,3 +145,22 @@ def test_docs_plus_code_not_trivial():
 
 def test_secret_in_docs_not_trivial():
     assert not is_trivial(d("docs/notes.md", '+api_key: "sk_live_51H8xExampleKeyDoNotUse"'))
+
+
+from app.analyzer import is_docs_only
+
+
+def test_readme_only_is_trivial():
+    assert is_trivial(d("README.md", "+Run pytest."))
+
+
+def test_docs_folder_is_trivial():
+    assert is_trivial(d("docs/guide.rst", "+text"))
+
+
+def test_docs_plus_code_not_trivial():
+    assert not is_docs_only(d("README.md", "+x") + d("app/x.py", "+y = 1"))
+
+
+def test_secret_in_docs_not_trivial():
+    assert not is_trivial(d("docs/notes.md", '+api_key: "sk_live_51H8xExampleKeyDoNotUse"'))

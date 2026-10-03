@@ -42,3 +42,4 @@ Four labelled sets of diffs. Read the status column: the sets differ in how much
 - The model over-scores some resource-limit changes (for example a memory limit cut) as high.
 - Rules match known strings only, and comment detection is prefix-based.
 - `0.0.0.0/0` is flagged even on egress rules.
+Run `pytest -q` to run the unit tests.

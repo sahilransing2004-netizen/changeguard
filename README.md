@@ -7,7 +7,7 @@ AI-assisted change-risk gate for pull requests. It scores a diff as low, medium 
 ## How it works
 1. A PR triggers the workflow on a self-hosted runner.
 2. The runner posts the diff to `/analyze`.
-3. A rule table and a comment-only check set a floor. The LLM scores the change. The final score is the max of the two.
+3. Docs-only and comment-only diffs skip the model and score 5 (the low-risk screenshot below is this case). For everything else, a rule table sets a floor, the LLM scores the change, and the final score is the max of the two.
 4. The PR gets a comment with the level and reasons. High fails the check, medium warns, low passes.
 
 ![High-risk PR blocked](docs/pr-high.png)

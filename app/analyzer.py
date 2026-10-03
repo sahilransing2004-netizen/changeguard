@@ -90,9 +90,17 @@ def is_comment_only(diff: str) -> bool:
     return seen
 
 
+DOC_PATH = re.compile(r"(\.(md|txt|rst)$)|(^docs/)", re.I)
+
+
+def is_docs_only(diff: str) -> bool:
+    paths = {p for p, _, _ in iter_changed_lines(diff)}
+    return bool(paths) and all(DOC_PATH.search(p) for p in paths)
+
+
 def is_trivial(diff: str) -> bool:
     """Comment/whitespace-only change with no risky pattern (a secret in a comment still counts)."""
-    return bool(diff) and is_comment_only(diff) and not find_risky(diff)
+    return bool(diff) and (is_comment_only(diff) or is_docs_only(diff)) and not find_risky(diff)
 
 
 def heuristic_verdict(summary: ChangeSummary, diff: str = "") -> Verdict:

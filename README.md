@@ -58,4 +58,6 @@ Run: `pip install -r requirements-mcp.txt && python mcp_server/server.py`. The s
 
 ![MCP Inspector calling analyze_diff](docs/mcp-inspector.png)
 
+Note: pass real `git diff` output (with `diff --git` headers) to `analyze_diff`; without them no file categories are detected. Related-incident retrieval (RAG) only runs when the rules-based baseline score is at least 30, so a small single-file Kubernetes change (baseline 20) gets none.
+
 Limitation: the MCP server is a thin wrapper over the HTTP API with no authentication; it assumes a trusted local client.

@@ -43,3 +43,17 @@ Four labelled sets of diffs. Read the status column: the sets differ in how much
 - Rules match known strings only, and comment detection is prefix-based.
 - `0.0.0.0/0` is flagged even on egress rules.
 Run `pytest -q` to run the unit tests.
+
+## MCP server
+
+`mcp_server/server.py` exposes ChangeGuard as an MCP server (Python `mcp` SDK, stdio), so any MCP client can use it.
+
+| Tool | What it does |
+|------|--------------|
+| `analyze_diff` | Scores a diff low/medium/high via the `/analyze` API |
+| `recent_verdicts` | Reads verdict counts from `/metrics` |
+
+Run: `pip install -r requirements-mcp.txt && python mcp_server/server.py`. The service must be running; set `CHANGEGUARD_URL` if it is not on localhost:8001. To try it interactively: `npx @modelcontextprotocol/inspector python mcp_server/server.py`.
+
+
+Limitation: the MCP server is a thin wrapper over the HTTP API with no authentication; it assumes a trusted local client.

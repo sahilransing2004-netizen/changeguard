@@ -56,4 +56,6 @@ Run `pytest -q` to run the unit tests.
 Run: `pip install -r requirements-mcp.txt && python mcp_server/server.py`. The service must be running; set `CHANGEGUARD_URL` if it is not on localhost:8001. To try it interactively: `npx @modelcontextprotocol/inspector python mcp_server/server.py`.
 
 
+![MCP Inspector calling analyze_diff](docs/mcp-inspector.png)
+
 Limitation: the MCP server is a thin wrapper over the HTTP API with no authentication; it assumes a trusted local client.
